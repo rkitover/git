@@ -33,7 +33,7 @@ REM ================================================================
 
 	SET arch=%1
 	IF NOT DEFINED arch (
-		echo defaulting to 'x64-windows`. Invoke %0 with 'x86-windows', 'x64-windows', or 'arm64-windows', append '-static' for static builds.
+		echo defaulting to 'x64-windows`. Invoke %0 with 'x86-windows', 'x64-windows', or 'arm64-windows', append '-static' for static builds. >&2
 		set arch=x64-windows
 	)
 
@@ -44,9 +44,9 @@ REM ================================================================
 
 	git.exe version 2>nul
 	IF ERRORLEVEL 1 (
-		echo ***
-		echo Git not found. Please adjust your CMD path or Git install option.
-		echo ***
+		echo *** >&2
+		echo Git not found. Please adjust your CMD path or Git install option. >&2
+		echo *** >&2
 		EXIT /B 1
 	)
 
