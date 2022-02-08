@@ -33,7 +33,7 @@ REM ================================================================
 
 	SET arch=%1
 	IF NOT DEFINED arch (
-		echo defaulting to 'x64-windows`. Invoke %0 with 'x86-windows', 'x64-windows', or 'arm64-windows'
+		echo defaulting to 'x64-windows`. Invoke %0 with 'x86-windows', 'x64-windows', or 'arm64-windows', append '-static' for static builds.
 		set arch=x64-windows
 	)
 
