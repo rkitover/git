@@ -814,7 +814,8 @@ endif()
 
 add_custom_command(OUTPUT ${git_links} ${git_http_links}
 		COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/CreateLinks.cmake
-		DEPENDS git git-remote-http)
+		DEPENDS git git-remote-http
+		WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 add_custom_target(git-links ALL DEPENDS ${git_links} ${git_http_links})
 
 
