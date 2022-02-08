@@ -40,7 +40,7 @@ REM ================================================================
 	@FOR /F "delims=" %%D IN ("%~dp0") DO @SET cwd=%%~fD
 	cd %cwd%
 
-	dir vcpkg\vcpkg.exe >nul 2>nul && GOTO :install_libraries
+	IF EXIST vcpkg\vcpkg.exe goto :install_libraries
 
 	git.exe version 2>nul
 	IF ERRORLEVEL 1 (
