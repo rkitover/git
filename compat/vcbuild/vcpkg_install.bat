@@ -44,10 +44,11 @@ REM ================================================================
 
 	git.exe version 2>nul
 	IF ERRORLEVEL 1 (
-	echo "***"
-	echo "Git not found. Please adjust your CMD path or Git install option."
-	echo "***"
-	EXIT /B 1 )
+		echo ***
+		echo Git not found. Please adjust your CMD path or Git install option.
+		echo ***
+		EXIT /B 1
+	)
 
 	echo Fetching vcpkg in %cwd%vcpkg
 	git.exe clone https://github.com/Microsoft/vcpkg vcpkg
