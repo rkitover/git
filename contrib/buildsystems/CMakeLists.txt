@@ -1107,3 +1107,5 @@ foreach(tsh ${test_scipts})
 endforeach()
 
 endif()#BUILD_TESTING
+
+# vim:set sw=8 ts=8 noet:
