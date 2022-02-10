@@ -47,6 +47,9 @@ Open git.sln on Windows and build Git.
 NOTE: By default CMake will install vcpkg locally to your source tree on configuration,
 to avoid this, add `-DUSE_VCPKG=FALSE` to the command line when configuring.
 
+To set the vcpkg arch (target triplet) pass `VCPKG_ARCH` or
+`VCPKG_TARGET_TRIPLET` e.g.: `-DVCPKG_ARCH=x64-windows`.
+
 The Visual Studio default generator changed in v16.6 from its Visual Studio
 implemenation to `Ninja` This required changes to many CMake scripts.
 
@@ -55,6 +58,10 @@ cmake_minimum_required(VERSION 3.14)
 
 #set the source directory to root of git
 set(CMAKE_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../..)
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
+
+include(Utilities)
 
 option(USE_VCPKG "Whether or not to use vcpkg for obtaining dependencies.  Only applicable to Windows platforms" ON)
 if(NOT WIN32)
@@ -67,18 +74,21 @@ if(NOT DEFINED CMAKE_EXPORT_COMPILE_COMMANDS)
 endif()
 
 if(USE_VCPKG)
+	build_option(
+		VCPKG_ARCH
+		STRING "vcpkg arch/triplet, e.g. x64-windows."
+		x64-windows
+		ALIASES VCPKG_TARGET_TRIPLET
+	)
+
 	set(VCPKG_DIR "${CMAKE_SOURCE_DIR}/compat/vcbuild/vcpkg")
 	set(ENV{VCPKG_ROOT} "${VCPKG_DIR}")
 	message(STATUS "WIN32: ${WIN32}") # show its underlying text values
 	message(STATUS "VCPKG_DIR: ${VCPKG_DIR}")
-	message(STATUS "VCPKG_ARCH: ${VCPKG_ARCH}") # maybe unset
+	message(STATUS "VCPKG_ARCH: ${VCPKG_ARCH}")
 	message(STATUS "CMAKE_GENERATOR: ${CMAKE_GENERATOR}")
 	message(STATUS "CMAKE_EXPORT_COMPILE_COMMANDS: ${CMAKE_EXPORT_COMPILE_COMMANDS}")
 	message(STATUS "ENV(CMAKE_EXPORT_COMPILE_COMMANDS): $ENV{CMAKE_EXPORT_COMPILE_COMMANDS}")
-	if(NOT DEFINED VCPKG_ARCH)
-		message(STATUS "VCPKG_ARCH: unset, using 'x64-windows'")
-		set(VCPKG_ARCH "x64-windows") # default from vcpkg_install.bat
-	endif()
 	execute_process(COMMAND ${CMAKE_SOURCE_DIR}/compat/vcbuild/vcpkg_install.bat ${VCPKG_ARCH})
 	list(APPEND CMAKE_PREFIX_PATH "${VCPKG_DIR}/installed/${VCPKG_ARCH}")
 
