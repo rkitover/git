@@ -44,8 +44,12 @@ This process generates a Makefile(Linux/*BSD/MacOS), Visual Studio solution(Wind
 Run `make` to build Git on Linux/*BSD/MacOS.
 Open git.sln on Windows and build Git.
 
-NOTE: By default CMake will install vcpkg locally to your source tree on configuration,
-to avoid this, add `-DUSE_VCPKG=FALSE` to the command line when configuring.
+NOTE: By default CMake will install vcpkg locally to your source
+tree on configuration, to avoid this, add `-DUSE_VCPKG=FALSE` to
+the command line when configuring.
+
+To use your own vcpkg clone, set the environment variable VCPKG_ROOT
+to the path or pass the path as `-DVCPKG_DIR=/your/clone/of/vcpkg`.
 
 To set the vcpkg arch (target triplet) pass `VCPKG_ARCH` or
 `VCPKG_TARGET_TRIPLET` e.g.: `-DVCPKG_ARCH=x64-windows`.
@@ -75,15 +79,20 @@ endif()
 
 if(USE_VCPKG)
 	build_option(
+		VCPKG_DIR
+		PATH "Path to vcpkg clone."
+		"${CMAKE_SOURCE_DIR}/compat/vcbuild/vcpkg"
+		ALIASES ENV{VCPKG_ROOT}
+	)
+
+	build_option(
 		VCPKG_ARCH
 		STRING "vcpkg arch/triplet, e.g. x64-windows."
 		x64-windows
 		ALIASES VCPKG_TARGET_TRIPLET
 	)
 
-	set(VCPKG_DIR "${CMAKE_SOURCE_DIR}/compat/vcbuild/vcpkg")
-	set(ENV{VCPKG_ROOT} "${VCPKG_DIR}")
-	message(STATUS "WIN32: ${WIN32}") # show its underlying text values
+	message(STATUS "WIN32: ${WIN32}")
 	message(STATUS "VCPKG_DIR: ${VCPKG_DIR}")
 	message(STATUS "VCPKG_ARCH: ${VCPKG_ARCH}")
 	message(STATUS "CMAKE_GENERATOR: ${CMAKE_GENERATOR}")
