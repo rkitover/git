@@ -45,7 +45,7 @@ Run `make` to build Git on Linux/*BSD/MacOS.
 Open git.sln on Windows and build Git.
 
 NOTE: By default CMake will install vcpkg locally to your source tree on configuration,
-to avoid this, add `-DNO_VCPKG=TRUE` to the command line when configuring.
+to avoid this, add `-DUSE_VCPKG=FALSE` to the command line when configuring.
 
 The Visual Studio default generator changed in v16.6 from its Visual Studio
 implemenation to `Ninja` This required changes to many CMake scripts.
