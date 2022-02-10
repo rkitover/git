@@ -75,13 +75,13 @@ if(USE_VCPKG)
 	message(STATUS "CMAKE_GENERATOR: ${CMAKE_GENERATOR}")
 	message(STATUS "CMAKE_EXPORT_COMPILE_COMMANDS: ${CMAKE_EXPORT_COMPILE_COMMANDS}")
 	message(STATUS "ENV(CMAKE_EXPORT_COMPILE_COMMANDS): $ENV{CMAKE_EXPORT_COMPILE_COMMANDS}")
+	if(NOT DEFINED VCPKG_ARCH)
+		message(STATUS "VCPKG_ARCH: unset, using 'x64-windows'")
+		set(VCPKG_ARCH "x64-windows") # default from vcpkg_install.bat
+	endif()
 	if(NOT EXISTS ${VCPKG_DIR})
 		message(STATUS "Initializing vcpkg and building the Git's dependencies (this will take a while...)")
 		execute_process(COMMAND ${CMAKE_SOURCE_DIR}/compat/vcbuild/vcpkg_install.bat ${VCPKG_ARCH})
-	endif()
-	if(NOT EXISTS ${VCPKG_ARCH})
-		message(STATUS "VCPKG_ARCH: unset, using 'x64-windows'")
-		set(VCPKG_ARCH "x64-windows") # default from vcpkg_install.bat
 	endif()
 	list(APPEND CMAKE_PREFIX_PATH "${VCPKG_DIR}/installed/${VCPKG_ARCH}")
 
