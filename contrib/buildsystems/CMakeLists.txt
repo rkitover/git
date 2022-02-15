@@ -68,6 +68,7 @@ endif()
 
 if(USE_VCPKG)
 	set(VCPKG_DIR "${CMAKE_SOURCE_DIR}/compat/vcbuild/vcpkg")
+	set(ENV{VCPKG_ROOT} "${VCPKG_DIR}")
 	message("WIN32: ${WIN32}") # show its underlying text values
 	message("VCPKG_DIR: ${VCPKG_DIR}")
 	message("VCPKG_ARCH: ${VCPKG_ARCH}") # maybe unset
