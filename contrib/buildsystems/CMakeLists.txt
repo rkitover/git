@@ -69,21 +69,18 @@ endif()
 if(USE_VCPKG)
 	set(VCPKG_DIR "${CMAKE_SOURCE_DIR}/compat/vcbuild/vcpkg")
 	set(ENV{VCPKG_ROOT} "${VCPKG_DIR}")
-	message("WIN32: ${WIN32}") # show its underlying text values
-	message("VCPKG_DIR: ${VCPKG_DIR}")
-	message("VCPKG_ARCH: ${VCPKG_ARCH}") # maybe unset
-	message("MSVC: ${MSVC}")
-	message("CMAKE_GENERATOR: ${CMAKE_GENERATOR}")
-	message("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
-	message("CMAKE_GENERATOR_PLATFORM: ${CMAKE_GENERATOR_PLATFORM}")
-	message("CMAKE_EXPORT_COMPILE_COMMANDS: ${CMAKE_EXPORT_COMPILE_COMMANDS}")
-	message("ENV(CMAKE_EXPORT_COMPILE_COMMANDS): $ENV{CMAKE_EXPORT_COMPILE_COMMANDS}")
+	message(STATUS "WIN32: ${WIN32}") # show its underlying text values
+	message(STATUS "VCPKG_DIR: ${VCPKG_DIR}")
+	message(STATUS "VCPKG_ARCH: ${VCPKG_ARCH}") # maybe unset
+	message(STATUS "CMAKE_GENERATOR: ${CMAKE_GENERATOR}")
+	message(STATUS "CMAKE_EXPORT_COMPILE_COMMANDS: ${CMAKE_EXPORT_COMPILE_COMMANDS}")
+	message(STATUS "ENV(CMAKE_EXPORT_COMPILE_COMMANDS): $ENV{CMAKE_EXPORT_COMPILE_COMMANDS}")
 	if(NOT EXISTS ${VCPKG_DIR})
-		message("Initializing vcpkg and building the Git's dependencies (this will take a while...)")
+		message(STATUS "Initializing vcpkg and building the Git's dependencies (this will take a while...)")
 		execute_process(COMMAND ${CMAKE_SOURCE_DIR}/compat/vcbuild/vcpkg_install.bat ${VCPKG_ARCH})
 	endif()
 	if(NOT EXISTS ${VCPKG_ARCH})
-		message("VCPKG_ARCH: unset, using 'x64-windows'")
+		message(STATUS "VCPKG_ARCH: unset, using 'x64-windows'")
 		set(VCPKG_ARCH "x64-windows") # default from vcpkg_install.bat
 	endif()
 	list(APPEND CMAKE_PREFIX_PATH "${VCPKG_DIR}/installed/${VCPKG_ARCH}")
@@ -123,6 +120,14 @@ endif()
 project(git
 	VERSION ${git_version}
 	LANGUAGES C)
+
+# Some diagnostic output about the detected toolchain, must be
+# below project() call.
+if(WIN32)
+	message(STATUS "MSVC: ${MSVC}")
+endif()
+message(STATUS "CMAKE_C_COMPILER_ID: ${CMAKE_C_COMPILER_ID}")
+message(STATUS "CMAKE_GENERATOR_PLATFORM: ${CMAKE_GENERATOR_PLATFORM}")
 
 
 #TODO gitk git-gui gitweb
