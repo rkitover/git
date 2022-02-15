@@ -79,10 +79,7 @@ if(USE_VCPKG)
 		message(STATUS "VCPKG_ARCH: unset, using 'x64-windows'")
 		set(VCPKG_ARCH "x64-windows") # default from vcpkg_install.bat
 	endif()
-	if(NOT EXISTS ${VCPKG_DIR})
-		message(STATUS "Initializing vcpkg and building the Git's dependencies (this will take a while...)")
-		execute_process(COMMAND ${CMAKE_SOURCE_DIR}/compat/vcbuild/vcpkg_install.bat ${VCPKG_ARCH})
-	endif()
+	execute_process(COMMAND ${CMAKE_SOURCE_DIR}/compat/vcbuild/vcpkg_install.bat ${VCPKG_ARCH})
 	list(APPEND CMAKE_PREFIX_PATH "${VCPKG_DIR}/installed/${VCPKG_ARCH}")
 
 	# In the vcpkg edition, we need this to be able to link to libcurl
