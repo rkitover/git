@@ -73,9 +73,11 @@ REM ================================================================
 
 	echo Installing third-party libraries(%arch%), this may take a while...
 	FOR %%i IN (zlib expat libiconv openssl libssh2 curl) DO (
-	    cd %VCPKG_ROOT%
-	    IF NOT EXIST "packages\%%i_%arch%" CALL :sub__install_one %%i
-	    IF ERRORLEVEL 1 ( EXIT /B 1 )
+	    IF NOT DEFINED NO_%%i (
+		cd %VCPKG_ROOT%
+		IF NOT EXIST "packages\%%i_%arch%" CALL :sub__install_one %%i
+		IF ERRORLEVEL 1 ( EXIT /B 1 )
+	    )
 	)
 
 :install_defines
