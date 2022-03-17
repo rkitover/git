@@ -72,7 +72,7 @@ REM ================================================================
 :install_libraries
 
 	echo Installing third-party libraries(%arch%), this may take a while...
-	FOR %%i IN (zlib expat libiconv openssl libssh2 curl) DO (
+	FOR %%i IN (zlib expat libiconv openssl libssh2 curl gettext) DO (
 	    IF NOT DEFINED NO_%%i (
 		cd %VCPKG_ROOT%
 		IF NOT EXIST "packages\%%i_%arch%" CALL :sub__install_one %%i
@@ -139,4 +139,8 @@ goto :EOF
 
 :curl_features
 set features=[core,openssl,schannel]
+goto :EOF
+
+:gettext_features
+set features=[tools]
 goto :EOF
