@@ -54,6 +54,10 @@ to the path or pass the path as `-DVCPKG_DIR=/your/clone/of/vcpkg`.
 To set the vcpkg arch (target triplet) pass `VCPKG_ARCH` or
 `VCPKG_TARGET_TRIPLET` e.g.: `-DVCPKG_ARCH=x64-windows`.
 
+By default for vcpkg, gettext is not built and translations do not
+work because gettext is a very long compile. To enable translations
+pass `-DNO_GETTEXT=FALSE`.
+
 The Visual Studio default generator changed in v16.6 from its Visual Studio
 implemenation to `Ninja` This required changes to many CMake scripts.
 
@@ -71,6 +75,21 @@ option(USE_VCPKG "Whether or not to use vcpkg for obtaining dependencies.  Only 
 if(NOT WIN32)
 	set(USE_VCPKG OFF CACHE BOOL FORCE)
 endif()
+
+set(gettext_default TRUE)
+
+# Turn off gettext by default when using vcpkg because it's a very
+# long compile.
+if(NOT USE_VCPKG)
+	set(gettext_default FALSE)
+endif()
+
+build_option(
+	NO_GETTEXT
+	BOOL "Set to TRUE/ON to disable internationalization support using gettext and building translations using msgfmt from gettext-tools."
+	${gettext_default}
+	ALIASES ENV{NO_GETTEXT}
+)
 
 if(NOT DEFINED CMAKE_EXPORT_COMPILE_COMMANDS)
 	set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
@@ -195,8 +214,7 @@ find_package(CURL)
 find_package(EXPAT)
 find_package(Iconv)
 
-#Don't use libintl on Windows Visual Studio and Clang builds
-if(NOT (WIN32 AND (CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")))
+if(NOT NO_GETTEXT)
 	find_package(Intl)
 endif()
 
@@ -229,18 +247,10 @@ if(WIN32 AND NOT MSVC)#not required for visual studio builds
 	endif()
 endif()
 
-if(NO_GETTEXT)
-	message(STATUS "msgfmt not used under NO_GETTEXT")
-else()
+if(NOT NO_GETTEXT)
 	find_program(MSGFMT_EXE msgfmt)
 	if(NOT MSGFMT_EXE)
-		if(USE_VCPKG)
-			set(MSGFMT_EXE ${CMAKE_SOURCE_DIR}/compat/vcbuild/vcpkg/downloads/tools/msys2/msys64/usr/bin/msgfmt.exe)
-		endif()
-		if(NOT EXISTS ${MSGFMT_EXE})
-			message(WARNING "Text Translations won't be built")
-			unset(MSGFMT_EXE)
-		endif()
+		message(WARNING "msgfmt not available and/or could not be installed, text translations won't be built.")
 	endif()
 endif()
 
@@ -1056,7 +1066,6 @@ set(NO_PYTHON )
 set(PAGER_ENV "LESS=FRX LV=-c")
 set(DC_SHA1 YesPlease)
 set(RUNTIME_PREFIX true)
-set(NO_GETTEXT )
 
 if(NOT CURL_FOUND)
 	set(NO_CURL 1)
@@ -1064,10 +1073,6 @@ endif()
 
 if(NOT EXPAT_FOUND)
 	set(NO_EXPAT 1)
-endif()
-
-if(NOT Intl_FOUND)
-	set(NO_GETTEXT 1)
 endif()
 
 if(NOT PERL_TESTS)
